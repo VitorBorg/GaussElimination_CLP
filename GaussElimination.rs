@@ -1,5 +1,5 @@
-# Codigo convertido para Rust, que foi adaptado do usuario Maihj do github (implementado em c): https://github.com/Maihj
-# Link do repositorio: https://github.com/Maihj/Algorithms/blob/master/Gaussian-elimination/gauss-eli.c
+// Codigo convertido para Rust, que foi adaptado do usuario Maihj do github (implementado em c): https://github.com/Maihj
+// Link do repositorio: https://github.com/Maihj/Algorithms/blob/master/Gaussian-elimination/gauss-eli.c
 
 
 use std::io::{self, Write};

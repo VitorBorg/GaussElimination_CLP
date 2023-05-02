@@ -1,5 +1,5 @@
-# Codigo obtido atraves do usuario Maihj do github: https://github.com/Maihj
-# Link do repositorio: https://github.com/Maihj/Algorithms/blob/master/Gaussian-elimination/gauss-eli.c
+// Codigo obtido atraves do usuario Maihj do github: https://github.com/Maihj
+// Link do repositorio: https://github.com/Maihj/Algorithms/blob/master/Gaussian-elimination/gauss-eli.c
 
 #include <stdio.h>
 

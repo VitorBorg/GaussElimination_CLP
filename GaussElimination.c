@@ -1,76 +1,50 @@
-// Codigo obtido atraves do usuario Maihj do github: https://github.com/Maihj
-// Link do repositorio: https://github.com/Maihj/Algorithms/blob/master/Gaussian-elimination/gauss-eli.c
+// Link da implementação original: https://www.codewithc.com/c-program-for-gauss-elimination-method/
 
-#include <stdio.h>
-
-/* The implementation of Gauss elimination. */
-int main(){
-    int i, j, k, n, c = 0;
-    float result;
-    float a[100][100], b[100], l[100][100], x[100];
-    
-    printf("\n----------------------------------------------------------------------\n This algorithm is used to solve 'Ax = B' with Gauss elimination. \n----------------------------------------------------------------------\n");
-    printf("Please enter the dimension of the matrix A: ");
-    scanf("%d", &n);
-
-    printf("Please enter A: ");
-    for (i = 0; i < n; i++){
-	for (j = 0; j < n; j++){
-	    scanf("%f", &a[i][j]);
-	}
+#include<stdio.h>
+int main()
+{
+    int i,j,k,n;
+    float A[20][20],c,x[10],sum=0.0;
+    printf("\nEnter the order of matrix: ");
+    scanf("%d",&n);
+    printf("\nEnter the elements of augmented matrix row-wise:\n\n");
+    for(i=1; i<=n; i++)
+    {
+        for(j=1; j<=(n+1); j++)
+        {
+            printf("A[%d][%d] : ", i,j);
+            scanf("%f",&A[i][j]);
+        }
     }
-    
-    printf("please enter B: ");
-    for (i = 0; i < n; i++){
-	scanf("%f", &b[i]);
+    for(j=1; j<=n; j++) /* loop for the generation of upper triangular matrix*/
+    {
+        for(i=1; i<=n; i++)
+        {
+            if(i>j)
+            {
+                c=A[i][j]/A[j][j];
+                for(k=1; k<=n+1; k++)
+                {
+                    A[i][k]=A[i][k]-c*A[j][k];
+                }
+            }
+        }
     }
-
-    for (k = 0; k < n-1; k++){
-	/* the condition of Gaussian elimination. */
-	if (a[k][k] == 0){
-	    printf("Can't solve this linear equations by Gaussian-elimination.\n");
-	    return 1;
-	}
-	for (i = k+1; i < n; i++){
-	    l[i][k] = a[i][k] / a[k][k];
-	    c++;
-	}
-	for (i = k+1; i < n; i++){
-	    for (j = k+1; j < n; j++){
-		a[i][j] = a[i][j] - l[i][k] * a[k][j];
-		c++;
-	    }
-	    b[i] = b[i] - l[i][k] * b[k];
-	    c++;
-	    a[i][k] = 0;
-	}
+    x[n]=A[n][n+1]/A[n][n];
+    /* this loop is for backward substitution*/
+    for(i=n-1; i>=1; i--)
+    {
+        sum=0;
+        for(j=i+1; j<=n; j++)
+        {
+            sum=sum+A[i][j]*x[j];
+        }
+        x[i]=(A[i][n+1]-sum)/A[i][i];
     }
-
-    printf("After converting, A(%d*%d) and B(%d*1) can be:\n", n, n, n);
-    for (i = 0; i < n; i++){
-	for (j = 0; j < n; j++){
-	    printf("%.2f  ", a[i][j]);
-	}
-	printf("%.2f\n", b[i]);
+    printf("\nThe solution is: \n");
+    for(i=1; i<=n; i++)
+    {
+        printf("\nx%d=%f\t",i,x[i]); /* x1, x2, x3 are the required solutions*/
     }
-
-    printf("The solution to x is: ");
-    x[n-1] = b[n-1] / a[n-1][n-1];
-    c++;
-    for (i = n-2; i >= 0; i--){
-	result = 0.0;
-	for (j = i+1; j < n; j++){
-	    result = result + a[i][j] * x[j];
-	    c++;
-	}
-	x[i] = (b[i] - result) / a[i][i];
-	c++;
-    }
-
-    for (i = 0; i < n; i++){
-	printf("%.2f  ", x[i]);
-    }
-    printf("\nThe number of times in multiplication and division is: %d\n", c);
-    
-    return 0;
+    return(0);
 }

@@ -1,77 +1,65 @@
-// Codigo convertido para Go, que foi adaptado do usuario Maihj do github (implementado em c): https://github.com/Maihj
-// Link do repositorio: https://github.com/Maihj/Algorithms/blob/master/Gaussian-elimination/gauss-eli.c
+// Codigo convertido para GO, que foi adaptado de um código escrito em C
+// Link da implementação original: https://www.codewithc.com/c-program-for-gauss-elimination-method/
 
 package main
 
 import (
 	"fmt"
+	"strconv"
 )
 
 func main() {
-	var n, c int
-	var a, b, l, x [100]float32
-
-	fmt.Println("\n----------------------------------------------------------------------")
-	fmt.Println(" This algorithm is used to solve 'Ax = B' with Gauss elimination.")
-	fmt.Println("----------------------------------------------------------------------\n")
-	fmt.Print("Please enter the dimension of the matrix A: ")
+	var n int
+	var sum float64
+	fmt.Print("\nEnter the order of matrix: ")
 	fmt.Scanf("%d", &n)
 
-	fmt.Print("Please enter A: ")
+	a := make([][]float64, n)
+	for i := range a {
+		a[i] = make([]float64, n+1)
+	}
+
+	fmt.Print("\nEnter the elements of augmented matrix row-wise:\n")
 	for i := 0; i < n; i++ {
-		for j := 0; j < n; j++ {
-			fmt.Scanf("%f", &a[i*100+j])
+		for j := 0; j < n+1; j++ {
+			fmt.Printf("A[%d][%d]: ", i+1, j+1)
+			a[i][j] = readFloat()
 		}
 	}
 
-	fmt.Print("Please enter B: ")
-	for i := 0; i < n; i++ {
-		fmt.Scanf("%f", &b[i])
-	}
-
-	for k := 0; k < n-1; k++ {
-		if a[k*100+k] == 0 {
-			fmt.Println("Can't solve this linear equations by Gaussian-elimination.")
-			return
-		}
-		for i := k + 1; i < n; i++ {
-			l[i*100+k] = a[i*100+k] / a[k*100+k]
-			c++
-		}
-		for i := k + 1; i < n; i++ {
-			for j := k + 1; j < n; j++ {
-				a[i*100+j] = a[i*100+j] - l[i*100+k]*a[k*100+j]
-				c++
+	for j := 0; j < n; j++ {
+		for i := j + 1; i < n; i++ {
+			c := a[i][j] / a[j][j]
+			for k := 0; k < n+1; k++ {
+				a[i][k] = a[i][k] - c*a[j][k]
 			}
-			b[i] = b[i] - l[i*100+k]*b[k]
-			c++
-			a[i*100+k] = 0
 		}
 	}
 
-	fmt.Printf("After converting, A(%d*%d) and B(%d*1) can be:\n", n, n, n)
-	for i := 0; i < n; i++ {
-		for j := 0; j < n; j++ {
-			fmt.Printf("%.2f  ", a[i*100+j])
-		}
-		fmt.Printf("%.2f\n", b[i])
-	}
+	x := make([]float64, n)
+	x[n-1] = a[n-1][n] / a[n-1][n-1]
 
-	fmt.Print("The solution to x is: ")
-	x[n-1] = b[n-1] / a[(n-1)*100+n-1]
-	c++
 	for i := n - 2; i >= 0; i-- {
-		var result float32 = 0
+		sum = 0
 		for j := i + 1; j < n; j++ {
-			result = result + a[i*100+j]*x[j]
-			c++
+			sum += a[i][j] * x[j]
 		}
-		x[i] = (b[i] - result) / a[i*100+i]
-		c++
+		x[i] = (a[i][n] - sum) / a[i][i]
 	}
 
+	fmt.Println("\nThe solution is:")
 	for i := 0; i < n; i++ {
-		fmt.Printf("%.2f  ", x[i])
+		fmt.Printf("\nx%d=%f\t", i+1, x[i])
 	}
-	fmt.Printf("\nThe number of times in multiplication and division is: %d\n", c)
+}
+
+func readFloat() float64 {
+	var input string
+	fmt.Scanf("%s", &input)
+	value, err := strconv.ParseFloat(input, 64)
+	if err != nil {
+		fmt.Println("Error reading float:", err)
+		return 0.0
+	}
+	return value
 }

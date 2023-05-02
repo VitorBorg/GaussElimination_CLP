@@ -1,91 +1,62 @@
-// Codigo convertido para Rust, que foi adaptado do usuario Maihj do github (implementado em c): https://github.com/Maihj
-// Link do repositorio: https://github.com/Maihj/Algorithms/blob/master/Gaussian-elimination/gauss-eli.c
+// Codigo convertido para Rust, que foi adaptado de um código escrito em C
+// Link da implementação original: https://www.codewithc.com/c-program-for-gauss-elimination-method/
 
-
-use std::io::{self, Write};
+use std::io;
 
 fn main() {
     let mut n: usize;
-    let mut a = vec![vec![0f32; 100]; 100];
-    let mut b = vec![0f32; 100];
-    let mut l = vec![vec![0f32; 100]; 100];
-    let mut x = vec![0f32; 100];
-    let mut c = 0;
+    let mut a: Vec<Vec<f32>> = Vec::new();
+    let mut x: Vec<f32> = Vec::new();
+    let mut sum: f32;
 
-    println!("\n----------------------------------------------------------------------\n This algorithm is used to solve 'Ax = B' with Gauss elimination. \n----------------------------------------------------------------------\n");
-    print!("Please enter the dimension of the matrix A: ");
-    io::stdout().flush().unwrap();
-    n = read_usize();
+    println!("\nEnter the order of matrix: ");
+    n = read_usize().unwrap();
+    println!("\nEnter the elements of augmented matrix row-wise:\n");
 
-    print!("Please enter A: ");
-    io::stdout().flush().unwrap();
     for i in 0..n {
-        for j in 0..n {
-            a[i][j] = read_f32();
+        let mut row: Vec<f32> = Vec::new();
+        for j in 0..n + 1 {
+            print!("A[{}][{}]: ", i + 1, j + 1);
+            let elem = read_f32().unwrap();
+            row.push(elem);
         }
+        a.push(row);
     }
 
-    print!("Please enter B: ");
-    io::stdout().flush().unwrap();
-    for i in 0..n {
-        b[i] = read_f32();
-    }
-
-    for k in 0..(n - 1) {
-        if a[k][k] == 0f32 {
-            println!("Can't solve this linear equations by Gaussian-elimination.");
-            return;
-        }
-        for i in (k + 1)..n {
-            l[i][k] = a[i][k] / a[k][k];
-            c += 1;
-        }
-        for i in (k + 1)..n {
-            for j in (k + 1)..n {
-                a[i][j] = a[i][j] - l[i][k] * a[k][j];
-                c += 1;
+    for j in 0..n {
+        for i in j + 1..n {
+            let c = a[i][j] / a[j][j];
+            for k in 0..n + 1 {
+                a[i][k] = a[i][k] - c * a[j][k];
             }
-            b[i] = b[i] - l[i][k] * b[k];
-            c += 1;
-            a[i][k] = 0f32;
         }
     }
 
-    println!("After converting, A({}*{}) and B({}*1) can be:", n, n, n);
+    x.resize(n, 0.0);
+    x[n - 1] = a[n - 1][n] / a[n - 1][n - 1];
+
+    for i in (0..n - 1).rev() {
+        sum = 0.0;
+        for j in i + 1..n {
+            sum += a[i][j] * x[j];
+        }
+        x[i] = (a[i][n] - sum) / a[i][i];
+    }
+
+    println!("\nThe solution is: ");
     for i in 0..n {
-        for j in 0..n {
-            print!("{:.2}  ", a[i][j]);
-        }
-        println!("{:.2}", b[i]);
+        println!("\nx{}={}\t", i + 1, x[i]);
     }
-
-    println!("The solution to x is: ");
-    x[n - 1] = b[n - 1] / a[n - 1][n - 1];
-    c += 1;
-    for i in (0..(n - 1)).rev() {
-        let mut result = 0f32;
-        for j in (i + 1)..n {
-            result = result + a[i][j] * x[j];
-            c += 1;
-        }
-        x[i] = (b[i] - result) / a[i][i];
-        c += 1;
-    }
-
-    for i in 0..n {
-        print!("{:.2}  ", x[i]);
-    }
-    println!("\nThe number of times in multiplication and division is: {}", c);
 }
 
-fn read_usize() -> usize {
+fn read_usize() -> Result<usize, std::num::ParseIntError> {
     let mut input = String::new();
-    io::stdin().read_line(&mut input).expect("Failed to read input");
-    input.trim().parse().expect("Failed to parse input")
+    io::stdin().read_line(&mut input).unwrap();
+    input.trim().parse::<usize>()
 }
 
-fn read_f32() -> f32 {
+fn read_f32() -> Result<f32, std::num::ParseFloatError> {
     let mut input = String::new();
-    io::stdin().read_line(&mut input).expect("Failed to read input");
-    input.trim().parse().expect("Failed to parse input")
+    io::stdin().read_line(&mut input).unwrap();
+    input.trim().parse::<f32>()
 }

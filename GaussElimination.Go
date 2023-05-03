@@ -55,6 +55,8 @@ func main() {
 
 func readFloat() float64 {
 	var input string
+	var consome string
+	fmt.Scanf("%s", &consome)
 	fmt.Scanf("%s", &input)
 	value, err := strconv.ParseFloat(input, 64)
 	if err != nil {
